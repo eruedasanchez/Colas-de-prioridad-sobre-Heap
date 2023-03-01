@@ -51,11 +51,14 @@ private:
     /** Coloca al elemento con indice "index" en la posicion correspondiente del vector cprior para preservar el invariante de heap **/
     void siftUp(vector<T> &cprior, int index);
 
+    /** Baja al elemento ubicado en la posicion index hasta una posicion donde se preserva el invariante de heap **/
+    void siftDown(vector<T> &cprior, int index);
+
     /** Chequea si un indice tiene hijo derecho **/
-    bool tieneHijoDerecho(vector<T> &cprior, int index);
+    bool tieneHijoDerecho(const vector<T> &cprior, int index);
 
     /** Chequea si el indice pasado por parametro representa una hoja en la cola de prioridad **/
-    bool esHoja(vector<T> &cprior, int index);
+    bool esHoja(const vector<T> &cprior, int index);
 };
 
 #include "ColaPrior.hpp"

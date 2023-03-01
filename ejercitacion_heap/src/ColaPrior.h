@@ -48,14 +48,11 @@ private:
     /** Retorna la posicion del padre dado un indice **/
     int padre(int indice);
 
-    /** Intercambia los elementos indicados en index1 y en index2 en el vector cprior **/
-    void intercambiar(vector<T> &cprior, int index1, int index2);
-
-    /** Intercambia los elementos indicados en index1 y en index2 en el vector cprior **/
-    void siftDown(vector<T> &cprior, int index);
+    /** Coloca al elemento con indice "index" en la posicion correspondiente del vector cprior para preservar el invariante de heap **/
+    void siftUp(vector<T> &cprior, int index);
 
     /** Chequea si un indice tiene hijo derecho **/
-    bool ColaPrior<T>::tieneHijoDerecho(vector<T> &cprior, int index);
+    bool tieneHijoDerecho(vector<T> &cprior, int index);
 
     /** Chequea si el indice pasado por parametro representa una hoja en la cola de prioridad **/
     bool esHoja(vector<T> &cprior, int index);

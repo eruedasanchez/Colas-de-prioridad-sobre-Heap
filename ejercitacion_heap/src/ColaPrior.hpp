@@ -11,6 +11,21 @@ int ColaPrior<T>::tam() const {
     return _tam;
 }
 
+template <typename T>
+int ColaPrior<T>::hijoIzquierdo(int indice) {
+    return 2 * indice + 1;
+}
+
+template <typename T>
+int ColaPrior<T>::hijoDerecho(int indice) {
+    return 2 * indice + 2;
+}
+
+template <typename T>
+int ColaPrior<T>::padre(int indice) {
+    return (indice-1) / 2;
+}
+
 template<class T>
 void ColaPrior<T>::encolar(const T& elem) {
 	// COMPLETAR
@@ -39,37 +54,11 @@ void ColaPrior<T>::desencolar() {
         swap(_colaPrior.front(),_colaPrior.back());
         _colaPrior.pop_back();                                            // Se borra el ultimo elemento del vector
         _tam--;
-        int index = 0;
-
-        // Se reubica el elemento que se encontabra al final del vector para que se preserve el invariante de heap
-        while(!esHoja(_colaPrior, index)){
-            T maximo = _colaPrior[hijoIzquierdo(index)];
-            int indiceMax = hijoIzquierdo(index);
-            if(tieneHijoDerecho(_colaPrior,index)){
-                maximo = max(_colaPrior[hijoDerecho(index)],_colaPrior[hijoIzquierdo(index)]);
-                if(_colaPrior[hijoDerecho(index)] > _colaPrior[hijoIzquierdo(index)]){
-                    indiceMax = hijoDerecho(index);
-                }
-            }
-
-            if(maximo > _colaPrior[index]){
-                swap(maximo,_colaPrior[index]);
-                index = indiceMax;
-            }
-    }
+        siftDown(_colaPrior, 0);
 }
 
 template<class T>
-bool ColaPrior<T>::tieneHijoDerecho(vector<T> &cprior, int index){
-    if(hijoDerecho(index) < cprior.size()){
-        return true;
-    } else {
-        return false;
-    }
-}
-
-template<class T>
-bool ColaPrior<T>::esHoja(vector<T> &cprior, int index){
+bool ColaPrior<T>::esHoja(const vector<T> &cprior, int index){
     if(hijoDerecho(index) >= cprior.size() && hijoIzquierdo(index) >= cprior.size()){
         return true;
     } else {
@@ -78,24 +67,43 @@ bool ColaPrior<T>::esHoja(vector<T> &cprior, int index){
 }
 
 template<class T>
-ColaPrior<T>::ColaPrior(const vector<T>& elems) {
+bool ColaPrior<T>::tieneHijoDerecho(const vector<T> &cprior, int index){
+    if(hijoDerecho(index) < cprior.size()){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+template<class T>
+void ColaPrior<T>::siftDown(vector<T> &cprior, int index) {
+    if (!esHoja(cprior, index)) {
+        T& maximo = cprior[hijoIzquierdo(index)];
+        int indiceMax = hijoIzquierdo(index);
+        if (tieneHijoDerecho(cprior, index)) {
+            maximo = max(cprior[hijoDerecho(index)], cprior[hijoIzquierdo(index)]);
+            if (cprior[hijoDerecho(index)] > cprior[hijoIzquierdo(index)]) {
+                indiceMax = hijoDerecho(index);
+            }
+        }
+
+        if (maximo > cprior[index]) {
+            swap(maximo, cprior[index]);
+            siftDown(cprior, indiceMax);
+        }
+
+    }
+}
+
+template<class T>
+ColaPrior<T>::ColaPrior(const vector<T>& elems) : ColaPrior() {
 	// COMPLETAR
+    *this = elems;
 }
 
-template <typename T>
-int ColaPrior<T>::hijoIzquierdo(int indice) {
-    return 2 * indice + 1;
-}
 
-template <typename T>
-int ColaPrior<T>::hijoDerecho(int indice) {
-    return 2 * indice + 2;
-}
 
-template <typename T>
-int ColaPrior<T>::padre(int indice) {
-    return (indice-1) / 2;
-}
+
 
 
 

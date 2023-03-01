@@ -14,59 +14,49 @@ int ColaPrior<T>::tam() const {
 template<class T>
 void ColaPrior<T>::encolar(const T& elem) {
 	// COMPLETAR
-    if(_colaPrior.size() == 0){
-        /** Caso 1: Heap vacio **/
-        _colaPrior[0] = elem;
-        _tam = _tam + 1;
-        return;
+    _colaPrior.push_back(elem);
+    siftUp(_colaPrior,_colaPrior.size()-1);
+    _tam++;
+}
+
+template<class T>
+void ColaPrior<T>::siftUp(vector<T> &cprior, int index){
+    if(index != 0 && cprior[index] > cprior[padre(index)]){
+        swap(cprior[index],cprior[padre(index)]);
+        siftUp(cprior, padre(index));
     }
 }
 
 template<class T>
 const T& ColaPrior<T>::proximo() const {
 	// COMPLETAR
-    return _colaPrior[0];
+    return _colaPrior.front();
 }
 
 template<class T>
 void ColaPrior<T>::desencolar() {
-	// COMPLETAR
-    if(_colaPrior.size() == 1){
-        /** CASO 1: La cola de prioridad tiene un solo elemento **/
-        _colaPrior.pop_back(_colaPrior.back());
-        _tam = 0;
-    } else {
-        /** CASO 2: La cola de prioridad tiene maas de un elemento **/
-        intercambiar(_colaPrior, 0, _colaPrior.size()-1);
-        _colaPrior.pop_back(_colaPrior.back());                            // Se borra el ultimo elemento del vector
-        siftDown(_colaPrior, 0);                                 // Se reubica el elemento que se encontabra al final del vector para que se preserve el invariante de heap
+	    // COMPLETAR
+        swap(_colaPrior.front(),_colaPrior.back());
+        _colaPrior.pop_back();                                            // Se borra el ultimo elemento del vector
+        _tam--;
+        int index = 0;
+
+        // Se reubica el elemento que se encontabra al final del vector para que se preserve el invariante de heap
+        while(!esHoja(_colaPrior, index)){
+            T maximo = _colaPrior[hijoIzquierdo(index)];
+            int indiceMax = hijoIzquierdo(index);
+            if(tieneHijoDerecho(_colaPrior,index)){
+                maximo = max(_colaPrior[hijoDerecho(index)],_colaPrior[hijoIzquierdo(index)]);
+                if(_colaPrior[hijoDerecho(index)] > _colaPrior[hijoIzquierdo(index)]){
+                    indiceMax = hijoDerecho(index);
+                }
+            }
+
+            if(maximo > _colaPrior[index]){
+                swap(maximo,_colaPrior[index]);
+                index = indiceMax;
+            }
     }
-    return;
-}
-
-template<class T>
-void ColaPrior<T>::intercambiar(vector<T> &cprior, int index1, int index2){
-    T tmp = cprior[index1];
-    cprior[index1] = cprior[index2];
-    cprior[index2] = tmp;
-}
-
-template<class T>
-void ColaPrior<T>::siftDown(vector<T> &cprior, int index){
-    if(!esHoja(cprior, index)){
-        T maximo = cprior[hijoIzquierdo(index)];
-        int indiceMax = hijoIzquierdo(index);
-        if(tieneHijoDerecho(cprior,index)){
-            maximo = max(cprior[hijoDerecho(index)],cprior[hijoIzquierdo(index)]);
-            indiceMax = max(hijoDerecho(index),hijoIzquierdo(index));
-        }
-
-        if(maximo > cprior[index]){
-            swap(cprior[index],maximo);
-            siftDown(cprior,indiceMax);
-        }
-    }
-    return;
 }
 
 template<class T>
@@ -90,12 +80,6 @@ bool ColaPrior<T>::esHoja(vector<T> &cprior, int index){
 template<class T>
 ColaPrior<T>::ColaPrior(const vector<T>& elems) {
 	// COMPLETAR
-    vector<T> colaPrioridad(elems.size());
-
-    /** Se agregan los elementos al vector respetando el invariante de heap **/
-    for(T elem: elems){
-        colaPrioridad.push_back(elem);
-    }
 }
 
 template <typename T>
